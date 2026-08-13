@@ -1,5 +1,67 @@
 import 'package:flutter/material.dart';
 
+String profileImage = 'assets/kierstien.jpeg';
+String appTitle = "My First Flutter Application";
+String name = "Verano, Kierstien S.";
+String courseSection = "BSIT-3";
+String birthdate = "May 15, 2006";
+int age = 20;
+String hobby = "Sleeping";
+double height = 160.0;
+bool isStudent = true;
+
+class Profile {
+  String? image;
+  String? name;
+  String? courseSection;
+  int? age;
+  String? hobby;
+
+  Profile({this.image, this.name, this.courseSection, this.age, this.hobby});
+}
+
+List<Profile> profiles = [
+  Profile(
+    image: 'assets/kierstien.jpeg',
+    name: 'Verano, Kierstien S.',
+    courseSection: 'BSIT-3',
+    age: 20,
+    hobby: 'Sleeping',
+  ),
+
+  Profile(
+    image: 'assets/kyla.jpeg',
+    name: 'Caballero, Kyla Marie S.',
+    courseSection: null,
+    age: 20,
+    hobby: 'Drawing',
+  ),
+
+  Profile(
+    image: 'assets/zelon.jpeg',
+    name: 'Estimo, Zelon Matthew C.',
+    courseSection: 'BSIT-3',
+    age: null,
+    hobby: 'Dancing',
+  ),
+
+  Profile(
+    image: 'assets/leila.jpeg',
+    name: 'Bangoy, Leila G.',
+    courseSection: 'BSIT-3',
+    age: 20,
+    hobby: null,
+  ),
+
+  Profile(
+    image: 'assets/cassy.jpeg',
+    name: 'Oraiz, Cassandra Gayle R.',
+    courseSection: 'BSIT-3',
+    age: 20,
+    hobby: 'Gaming',
+  ),
+];
+
 void main() {
   runApp(const MyApp());
 }
@@ -7,141 +69,70 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  Widget profileCard(Profile profile) {
+    return Card(
+      color: Colors.white.withOpacity(0.3),
+      elevation: 0,
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: 50),
+
+            Image.asset(profile.image ?? 'Missing', width: 130),
+
+            SizedBox(height: 30),
+
+            Text(
+              profile.name ?? 'Missing',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+
+            SizedBox(height: 10),
+
+            Text(
+              profile.courseSection ?? 'Missing',
+              style: TextStyle(fontSize: 18),
+            ),
+
+            SizedBox(height: 10),
+
+            Text(
+              "Age: ${profile.age ?? 'Missing'}",
+              style: TextStyle(fontSize: 18),
+            ),
+
+            SizedBox(height: 10),
+
+            Text(
+              "Hobby: ${profile.hobby ?? 'Missing'}",
+              style: TextStyle(fontSize: 18),
+            ),
+
+            SizedBox(height: 50),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: const Color(0xFFFFE6EE),
+        backgroundColor: const Color.fromARGB(255, 231, 227, 227),
         appBar: AppBar(title: const Text("My First Flutter Application")),
         body: SingleChildScrollView(
-          // provides scrolling capability to a single child container whose content might exceed the available screen space
+          // provides scrolling capability to a single child container whose content might exceed the available screen space (Flag 6)
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.all(8),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Card 1: Personal Information (Profile kemeru of mine)
-                Card(
-                  color: Colors.white.withOpacity(0.3),
-                  elevation: 0,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset('assets/dachshund.png', width: 130),
-
-                        SizedBox(height: 10),
-                        Text(
-                          "Verano, Kierstien S.",
-                          style: TextStyle(
-                            fontSize: 23,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-
-                        SizedBox(height: 10),
-                        Text("BSIT-3", style: TextStyle(fontSize: 18)),
-
-                        SizedBox(height: 10),
-                        Text(
-                          "My First Flutter Application",
-                          style: TextStyle(
-                            fontSize: 23,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-
-                        SizedBox(height: 10),
-                        Text(
-                          "August 11, 2026",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-
-                        SizedBox(height: 10),
-                        Text("Hobby: Sleeping", style: TextStyle(fontSize: 23)),
-
-                        SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text('Age: 20', style: TextStyle(fontSize: 16)),
-
-                            SizedBox(width: 30),
-                            Text(
-                              'Birthdate: May 15, 2006',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: 20),
-
-                // Card 2: Favorites of mine <33
-                Card(
-                  color: Colors.white.withOpacity(0.3),
-                  elevation: 0,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(Icons.favorite, size: 22),
-
-                            SizedBox(width: 8),
-                            Text(
-                              "My Favorites",
-                              style: TextStyle(
-                                fontSize: 23,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-
-                            SizedBox(width: 8),
-                            Icon(Icons.favorite, size: 22),
-                          ],
-                        ),
-
-                        SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Game: Mobile Legends',
-                              style: TextStyle(fontSize: 16),
-                            ),
-
-                            SizedBox(width: 15),
-                            Text(
-                              'Movie: Mean Girls',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ],
-                        ),
-
-                        SizedBox(height: 10),
-                        Text("Color: Pink", style: TextStyle(fontSize: 15)),
-                      ],
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: 20),
+                for (Profile profile in profiles) profileCard(profile),
               ],
             ),
           ),
@@ -150,34 +141,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-/*class _InfoBox extends StatelessWidget {
-  final String text;
-  final double fontSize;
-  final FontWeight fontWeight;
-
-  const _InfoBox({
-    required this.text,
-    required this.fontSize,
-    this.fontWeight = FontWeight.normal,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: Color.fromARGB(90, 255, 255, 255),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: fontSize,
-          fontWeight: fontWeight,
-          color: const Color.fromARGB(255, 255, 176, 210),
-        ),
-      ),
-    );
-  }
-}*/
