@@ -20,6 +20,8 @@ class Profile {
   String studentId;
   String email;
   String favoriteSubject;
+  bool isScholar = false;
+  bool isFavorite = false;
 
   Profile({
     required this.image,
@@ -91,7 +93,7 @@ List<Profile> profiles = [
     age: 20,
     hobby: 'Gaming',
     studentId: '55555',
-    email: 'cassandra oraiz@dbtc-cebu.edu.ph',
+    email: 'cassandra.oraiz@dbtc-cebu.edu.ph',
     favoriteSubject: 'Internet of Things',
   ),
 
@@ -114,70 +116,211 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  Widget profileCard(Profile profile) {
-    return Card(
-      color: Colors.white.withOpacity(0.3),
-      elevation: 0,
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(height: 50),
-            Image.asset(profile.image, width: 130),
-            SizedBox(height: 30),
-            Text(
-              profile.name,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            Text(
-              profile.course,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 10),
-            Text(
-              profile.yearLevel,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 10),
-            Text(
-              "Age: ${profile.age}",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 10),
-            Text(
-              "Hobby: ${profile.hobby}",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 10),
-            Text(
-              "Student ID: ${profile.studentId}",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 10),
-            Text(
-              "Email: ${profile.email}",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 10),
-            Text(
-              "Favorite Subject: ${profile.favoriteSubject}",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 50),
-          ],
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Widget profileCard(BuildContext context, Profile profile) {
+    return InkWell(
+      onTap: () {
+        print("${profile.name} profile selected");
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("${profile.name} profile selected"),
+            duration: Duration(seconds: 1),
+          ),
+        );
+      },
+      child: Card(
+        color: Colors.white.withOpacity(0.3),
+        elevation: 0,
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Stack(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 50),
+                  Image.asset(profile.image, width: 130),
+                  SizedBox(height: 30),
+                  Text(
+                    profile.name,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    profile.course,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    profile.yearLevel,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    "Age: ${profile.age}",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    "Hobby: ${profile.hobby}",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    "Student ID: ${profile.studentId}",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    "Email: ${profile.email}",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    "Favorite Subject: ${profile.favoriteSubject}",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  SizedBox(height: 20),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // scholar button
+                      SizedBox(
+                        width: 105,
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              profile.isScholar = !profile.isScholar;
+                            });
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  profile.isScholar
+                                      ? "${profile.name} marked as Scholar"
+                                      : "${profile.name} Scholar removed",
+                                ),
+                                duration: Duration(seconds: 1),
+                              ),
+                            );
+                          },
+                          icon: Icon(
+                            profile.isScholar ? Icons.star : Icons.school,
+                            size: 16,
+                          ),
+                          label: const Text(
+                            "Scholar",
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(width: 5),
+
+                      // edit button
+                      SizedBox(
+                        width: 105,
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                          ),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text("Edit ${profile.name}"),
+                                  content: const Text("Hello! Edit form coming soon pa eme."),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text("Close"),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          icon: const Icon(Icons.edit, size: 16),
+                          label: const Text(
+                            "Edit",
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(width: 5),
+
+                      // delete button
+                      SizedBox(
+                        width: 105,
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              profiles.remove(profile);
+                            });
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("${profile.name} removed"),
+                                duration: Duration(seconds: 1),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.delete, size: 16),
+                          label: const Text(
+                            "Delete",
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 30),
+                ],
+              ),
+
+              Positioned(
+                top: 0,
+                right: 0,
+                child: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      profile.isFavorite = !profile.isFavorite;
+                    });
+                  },
+                  icon: Icon(
+                    profile.isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color: Colors.deepPurple,
+                    size: 28,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -201,7 +344,7 @@ class MyApp extends StatelessWidget {
                 padding: const EdgeInsets.all(8),
                 itemCount: profiles.length,
                 itemBuilder: (context, index) {
-                  return profileCard(profiles[index]);
+                  return profileCard(context, profiles[index]);
                 },
               ),
       ),
