@@ -1,15 +1,5 @@
 import 'package:flutter/material.dart';
 
-// String profileImage = 'assets/kierstien.jpeg';
-// String appTitle = "My First Flutter Application";
-// String name = "Verano, Kierstien S.";
-// String courseSection = "BSIT-3";
-// String birthdate = "May 15, 2006";
-// int age = 20;
-// String hobby = "Sleeping";
-// double height = 160.0;
-// bool isStudent = true;
-
 class Profile {
   String image;
   String name;
@@ -22,6 +12,7 @@ class Profile {
   String favoriteSubject;
   bool isScholar = false;
   bool isFavorite = false;
+  bool active = true;
 
   Profile({
     required this.image,
@@ -33,6 +24,7 @@ class Profile {
     required this.studentId,
     required this.email,
     required this.favoriteSubject,
+    this.active = true,
   });
 }
 
@@ -47,6 +39,7 @@ List<Profile> profiles = [
     studentId: '11111',
     email: 'kierstien.verano@dbtc-cebu.edu.ph',
     favoriteSubject: 'Break Time',
+    active: true,
   ),
 
   Profile(
@@ -59,6 +52,7 @@ List<Profile> profiles = [
     studentId: '22222',
     email: 'kyla.caballero@dbtc-cebu.edu.ph',
     favoriteSubject: 'Break Time',
+    active: true,
   ),
 
   Profile(
@@ -71,6 +65,7 @@ List<Profile> profiles = [
     studentId: '33333',
     email: 'zelon.estimo@dbtc-cebu.edu.ph',
     favoriteSubject: 'Dismissal Time',
+    active: true,
   ),
 
   Profile(
@@ -83,6 +78,7 @@ List<Profile> profiles = [
     studentId: '44444',
     email: 'leila.bangoy@dbtc-cebu.edu.ph',
     favoriteSubject: 'Application Development and Emerging Technologies',
+    active: false,
   ),
 
   Profile(
@@ -95,6 +91,7 @@ List<Profile> profiles = [
     studentId: '55555',
     email: 'cassandra.oraiz@dbtc-cebu.edu.ph',
     favoriteSubject: 'Internet of Things',
+    active: true,
   ),
 
   Profile(
@@ -107,6 +104,7 @@ List<Profile> profiles = [
     studentId: '66666',
     email: 'taylor.swift@dbtc-cebu.edu.ph',
     favoriteSubject: 'Fundamentals of Databased System',
+    active: true,
   ),
 ];
 
@@ -124,6 +122,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  bool isLoading = false;
+
   Widget profileCard(BuildContext context, Profile profile) {
     return InkWell(
       onTap: () {
@@ -196,6 +196,12 @@ class _MyAppState extends State<MyApp> {
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 18),
                   ),
+                  SizedBox(height: 10),
+                  Text(
+                    profile.active ? "Active" : "Inactive",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 18),
+                  ),
                   SizedBox(height: 20),
 
                   Row(
@@ -250,7 +256,9 @@ class _MyAppState extends State<MyApp> {
                               builder: (context) {
                                 return AlertDialog(
                                   title: Text("Edit ${profile.name}"),
-                                  content: const Text("Hello! Edit form coming soon pa eme."),
+                                  content: const Text(
+                                    "Hello! Edit form coming soon pa eme.",
+                                  ),
                                   actions: [
                                     TextButton(
                                       onPressed: () => Navigator.pop(context),
@@ -306,17 +314,26 @@ class _MyAppState extends State<MyApp> {
               Positioned(
                 top: 0,
                 right: 0,
-                child: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      profile.isFavorite = !profile.isFavorite;
-                    });
-                  },
-                  icon: Icon(
-                    profile.isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: Colors.deepPurple,
-                    size: 28,
-                  ),
+                child: Column(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          profile.isFavorite = !profile.isFavorite;
+                        });
+                      },
+                      icon: Icon(
+                        profile.isFavorite
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        color: Colors.deepPurple,
+                        size: 28,
+                      ),
+                    ),
+
+                    if (!profile.active)
+                      Icon(Icons.warning, size: 28, color: Colors.deepPurple),
+                  ],
                 ),
               ),
             ],
@@ -333,7 +350,9 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         backgroundColor: const Color.fromARGB(255, 231, 227, 227),
         appBar: AppBar(title: const Text("My First Flutter Application")),
-        body: profiles.isEmpty
+        body: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : profiles.isEmpty
             ? const Center(
                 child: Text(
                   "No students found.",
