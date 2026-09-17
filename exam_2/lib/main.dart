@@ -1,61 +1,6 @@
 import 'package:flutter/material.dart';
-
-class Profile {
-  String name;
-  String status;
-  bool pc;
-  bool playing;
-  bool online;
-
-  Profile({
-    required this.name,
-    required this.status,
-    required this.pc,
-    required this.online,
-    required this.playing,
-  });
-}
-
-List<Profile> profiles = [
-  Profile(
-    name: 'MissYouLikeKrazy',
-    status: 'Online',
-    pc: true,
-    online: true,
-    playing: false,
-  ),
-  Profile(
-    name: 'bread',
-    status: 'Playing',
-    pc: true,
-    online: true,
-    playing: true,
-  ),
-  Profile(
-    name: 'The14th',
-    status: 'Playing',
-    pc: true,
-    online: true,
-    playing: true,
-  ),
-];
-
-List<Profile> online = [
-  Profile(
-    name: 'Carlvendish',
-    status: 'Away',
-    pc: false,
-    online: false,
-    playing: false,
-  ),
-  Profile(
-    name: 'D1yah',
-    status: 'Away',
-    pc: false,
-    online: false,
-    playing: false,
-  ),
-];
+import 'profile.dart';
+import 'chatroom.dart';
 
 void main() {
   runApp(const MyApp());
@@ -98,9 +43,10 @@ class SocialPage extends StatelessWidget {
           SizedBox(height: 20),
 
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.start,
 
             children: [
+              SizedBox(width: 32),
               Text(
                 'Friends',
                 style: TextStyle(
@@ -110,6 +56,7 @@ class SocialPage extends StatelessWidget {
                 ),
               ),
 
+              SizedBox(width: 25),
               Text(
                 'Messages',
                 style: TextStyle(
@@ -119,6 +66,7 @@ class SocialPage extends StatelessWidget {
                 ),
               ),
 
+              SizedBox(width: 25),
               Text(
                 'Requests',
                 style: TextStyle(
@@ -198,9 +146,9 @@ class SocialPage extends StatelessWidget {
 
           SizedBox(height: 15),
 
-          profileCard(profiles[0]),
-          profileCard(profiles[1]),
-          profileCard(profiles[2]),
+          profileCard(context, profiles[0]),
+          profileCard(context, profiles[1]),
+          profileCard(context, profiles[2]),
 
           SizedBox(height: 10),
 
@@ -219,77 +167,96 @@ class SocialPage extends StatelessWidget {
 
           SizedBox(height: 15),
 
-          profileCard(online[0]),
-          profileCard(online[1]),
+          profileCard(context, online[0]),
+          profileCard(context, online[1]),
         ],
       ),
     );
   }
 
-  Widget profileCard(Profile profile) {
+  Widget profileCard(BuildContext context, Profile profile) {
     return Padding(
       padding: EdgeInsets.only(left: 40, right: 25, bottom: 15),
 
-      child: Row(
-        children: [
-          Container(
-            width: 62,
-            height: 62,
-
-            decoration: BoxDecoration(
-              color: Color.fromARGB(255, 36, 33, 34),
-              shape: BoxShape.circle,
-            ),
-
-            child: Icon(
-              Icons.person,
-              color: profile.online
-                  ? Color.fromARGB(255, 255, 70, 85)
-                  : Colors.white,
-              size: 38,
-            ),
-          ),
-
-          SizedBox(width: 15),
-
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                profile.name,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ChatroomScreen(
+                convo: Convo(
+                  name: profile.name,
+                  message: '',
+                  online: profile.online,
                 ),
               ),
+            ),
+          );
+        },
 
-              SizedBox(height: 3),
+        child: Row(
+          children: [
+            Container(
+              width: 62,
+              height: 62,
 
-              Row(
-                children: [
-                  Icon(
-                    profile.pc ? Icons.monitor : Icons.mobile_friendly,
-                    color: Color.fromARGB(255, 190, 187, 188),
-                    size: 19,
-                  ),
-
-                  SizedBox(width: 5),
-
-                  Text(
-                    profile.pc
-                        ? '${profile.status} - VALORANT'
-                        : '${profile.status} - Riot Mobile',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 190, 187, 188),
-                      fontSize: 15,
-                    ),
-                  ),
-                ],
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 36, 33, 34),
+                shape: BoxShape.circle,
               ),
-            ],
-          ),
-        ],
+
+              child: Icon(
+                Icons.person,
+                color: profile.online ?? false
+                    ? Color.fromARGB(255, 255, 70, 85)
+                    : Colors.white,
+                size: 38,
+              ),
+            ),
+
+            SizedBox(width: 15),
+
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  profile.name ?? 'Unknown User',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                SizedBox(height: 3),
+
+                Row(
+                  children: [
+                    Icon(
+                      profile.pc ?? false
+                          ? Icons.monitor
+                          : Icons.mobile_friendly,
+                      color: Color.fromARGB(255, 190, 187, 188),
+                      size: 19,
+                    ),
+
+                    SizedBox(width: 5),
+
+                    Text(
+                      profile.pc ?? false
+                          ? '${profile.status} - VALORANT'
+                          : '${profile.status} - Riot Mobile',
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 190, 187, 188),
+                        fontSize: 15,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
