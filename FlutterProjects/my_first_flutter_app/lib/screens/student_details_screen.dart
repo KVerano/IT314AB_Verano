@@ -108,23 +108,101 @@ class StudentDetailsScreen extends StatelessWidget {
                     builder: (context) {
                       return AlertDialog(
                         title: Text("Edit ${profile.name}"),
-                        content: Text(
-                          "Name: ${profile.name}\n"
-                          "Student ID: ${profile.studentId}\n"
-                          "Course: ${profile.course}\n"
-                          "Year Level: ${profile.yearLevel}\n"
-                          "Age: ${profile.age}\n"
-                          "Hobby: ${profile.hobby}\n"
-                          "Email: ${profile.email}\n"
-                          "Favorite Subject: ${profile.favoriteSubject}\n"
-                          "Scholar: ${profile.isScholar ? "Yes" : "No"}\n"
-                          "Favorite: ${profile.isFavorite ? "Yes" : "No"}\n"
-                          "Status: ${profile.active ? "Active" : "Inactive"}",
+                        content: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextFormField(
+                                initialValue: profile.name,
+                                decoration: const InputDecoration(
+                                  labelText: "Name",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.zero,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              TextFormField(
+                                initialValue: profile.studentId,
+                                decoration: const InputDecoration(
+                                  labelText: "Student ID",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.zero,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              TextFormField(
+                                initialValue: profile.course,
+                                decoration: const InputDecoration(
+                                  labelText: "Course",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.zero,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              TextFormField(
+                                initialValue: profile.yearLevel,
+                                decoration: const InputDecoration(
+                                  labelText: "Year Level",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.zero,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              TextFormField(
+                                initialValue: profile.age.toString(),
+                                decoration: const InputDecoration(
+                                  labelText: "Age",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.zero,
+                                  ),
+                                ),
+                                keyboardType: TextInputType.number,
+                              ),
+                              SizedBox(height: 10),
+                              TextFormField(
+                                initialValue: profile.hobby,
+                                decoration: const InputDecoration(
+                                  labelText: "Hobby",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.zero,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              TextFormField(
+                                initialValue: profile.email,
+                                decoration: const InputDecoration(
+                                  labelText: "Email",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.zero,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              TextFormField(
+                                initialValue: profile.favoriteSubject,
+                                decoration: const InputDecoration(
+                                  labelText: "Favorite Subject",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.zero,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
-                            child: const Text("Close"),
+                            child: const Text("Cancel"),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {},
+                            child: const Text("Save"),
                           ),
                         ],
                       );

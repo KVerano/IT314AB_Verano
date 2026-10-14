@@ -138,13 +138,101 @@ class _StudentListScreenState extends State<StudentListScreen> {
                               builder: (context) {
                                 return AlertDialog(
                                   title: Text("Edit ${profile.name}"),
-                                  content: const Text(
-                                    "Hello! Edit form coming soon pa eme.",
+                                  content: SingleChildScrollView(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        TextFormField(
+                                          initialValue: profile.name,
+                                          decoration: const InputDecoration(
+                                            labelText: "Name",
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.zero,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 10),
+                                        TextFormField(
+                                          initialValue: profile.studentId,
+                                          decoration: const InputDecoration(
+                                            labelText: "Student ID",
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.zero,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 10),
+                                        TextFormField(
+                                          initialValue: profile.course,
+                                          decoration: const InputDecoration(
+                                            labelText: "Course",
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.zero,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 10),
+                                        TextFormField(
+                                          initialValue: profile.yearLevel,
+                                          decoration: const InputDecoration(
+                                            labelText: "Year Level",
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.zero,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 10),
+                                        TextFormField(
+                                          initialValue: profile.age.toString(),
+                                          decoration: const InputDecoration(
+                                            labelText: "Age",
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.zero,
+                                            ),
+                                          ),
+                                          keyboardType: TextInputType.number,
+                                        ),
+                                        SizedBox(height: 10),
+                                        TextFormField(
+                                          initialValue: profile.hobby,
+                                          decoration: const InputDecoration(
+                                            labelText: "Hobby",
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.zero,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 10),
+                                        TextFormField(
+                                          initialValue: profile.email,
+                                          decoration: const InputDecoration(
+                                            labelText: "Email",
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.zero,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 10),
+                                        TextFormField(
+                                          initialValue: profile.favoriteSubject,
+                                          decoration: const InputDecoration(
+                                            labelText: "Favorite Subject",
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.zero,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                   actions: [
                                     TextButton(
                                       onPressed: () => Navigator.pop(context),
-                                      child: const Text("Close"),
+                                      child: const Text("Cancel"),
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {},
+                                      child: const Text("Save"),
                                     ),
                                   ],
                                 );
