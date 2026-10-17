@@ -24,6 +24,43 @@ class Profile {
     required this.favoriteSubject,
     this.active = true,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'image': image,
+      'name': name,
+      'course': course,
+      'yearLevel': yearLevel,
+      'age': age,
+      'hobby': hobby,
+      'studentId': studentId,
+      'email': email,
+      'favoriteSubject': favoriteSubject,
+      'isScholar': isScholar,
+      'isFavorite': isFavorite,
+      'active': active,
+    };
+  }
+
+  factory Profile.fromJson(Map<String, dynamic> json) {
+    Profile student = Profile(
+      image: json['image'] ?? '',
+      name: json['name'] ?? '',
+      course: json['course'] ?? '',
+      yearLevel: json['yearLevel'] ?? '',
+      age: (json['age'] as num?)?.toInt() ?? 0,
+      hobby: json['hobby'] ?? 'Not provided',
+      studentId: json['studentId'] ?? '',
+      email: json['email'] ?? '',
+      favoriteSubject: json['favoriteSubject'] ?? 'Not provided',
+      active: json['active'] ?? true,
+    );
+
+    student.isScholar = json['isScholar'] ?? false;
+    student.isFavorite = json['isFavorite'] ?? false;
+
+    return student;
+  }
 }
 
 List<Profile> profiles = [

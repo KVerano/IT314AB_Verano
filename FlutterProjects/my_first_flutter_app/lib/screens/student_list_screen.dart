@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../profile.dart';
+import '../student_records.dart';
 
 class StudentListScreen extends StatefulWidget {
   const StudentListScreen({super.key});
@@ -13,10 +14,18 @@ class _StudentListScreenState extends State<StudentListScreen> {
 
   Widget profileCard(BuildContext context, Profile profile) {
     return InkWell(
-      onTap: () {
+      onTap: () async {
         print("${profile.name} profile selected");
 
-        Navigator.pushNamed(context, '/student-details', arguments: profile);
+        await Navigator.pushNamed(
+          context,
+          '/student-details',
+          arguments: profile,
+        );
+
+        if (!mounted) return;
+
+        setState(() {});
       },
       child: Card(
         color: Colors.white.withOpacity(0.3),
@@ -29,7 +38,9 @@ class _StudentListScreenState extends State<StudentListScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(height: 50),
-                  Image.asset(profile.image, width: 130),
+                  profile.image.isEmpty
+                      ? Icon(Icons.person, size: 130, color: Colors.grey)
+                      : Image.asset(profile.image, width: 130),
                   SizedBox(height: 30),
                   Text(
                     profile.name,
@@ -96,10 +107,14 @@ class _StudentListScreenState extends State<StudentListScreen> {
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(horizontal: 6),
                           ),
-                          onPressed: () {
+                          onPressed: () async {
                             setState(() {
                               profile.isScholar = !profile.isScholar;
                             });
+
+                            await saveProfiles();
+
+                            if (!mounted) return;
 
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -133,6 +148,17 @@ class _StudentListScreenState extends State<StudentListScreen> {
                             padding: const EdgeInsets.symmetric(horizontal: 6),
                           ),
                           onPressed: () {
+                            String editedName = profile.name;
+                            String editedStudentId = profile.studentId;
+                            String editedCourse = profile.course;
+                            String editedYearLevel = profile.yearLevel;
+                            String editedAge = profile.age.toString();
+                            String editedHobby = profile.hobby;
+                            String editedEmail = profile.email;
+                            String editedFavoriteSubject =
+                                profile.favoriteSubject;
+                            bool editedActive = profile.active;
+
                             showDialog(
                               context: context,
                               builder: (context) {
@@ -144,6 +170,9 @@ class _StudentListScreenState extends State<StudentListScreen> {
                                       children: [
                                         TextFormField(
                                           initialValue: profile.name,
+                                          onChanged: (value) {
+                                            editedName = value;
+                                          },
                                           decoration: const InputDecoration(
                                             labelText: "Name",
                                             border: OutlineInputBorder(
@@ -154,6 +183,9 @@ class _StudentListScreenState extends State<StudentListScreen> {
                                         SizedBox(height: 10),
                                         TextFormField(
                                           initialValue: profile.studentId,
+                                          onChanged: (value) {
+                                            editedStudentId = value;
+                                          },
                                           decoration: const InputDecoration(
                                             labelText: "Student ID",
                                             border: OutlineInputBorder(
@@ -164,6 +196,9 @@ class _StudentListScreenState extends State<StudentListScreen> {
                                         SizedBox(height: 10),
                                         TextFormField(
                                           initialValue: profile.course,
+                                          onChanged: (value) {
+                                            editedCourse = value;
+                                          },
                                           decoration: const InputDecoration(
                                             labelText: "Course",
                                             border: OutlineInputBorder(
@@ -174,6 +209,9 @@ class _StudentListScreenState extends State<StudentListScreen> {
                                         SizedBox(height: 10),
                                         TextFormField(
                                           initialValue: profile.yearLevel,
+                                          onChanged: (value) {
+                                            editedYearLevel = value;
+                                          },
                                           decoration: const InputDecoration(
                                             labelText: "Year Level",
                                             border: OutlineInputBorder(
@@ -184,6 +222,9 @@ class _StudentListScreenState extends State<StudentListScreen> {
                                         SizedBox(height: 10),
                                         TextFormField(
                                           initialValue: profile.age.toString(),
+                                          onChanged: (value) {
+                                            editedAge = value;
+                                          },
                                           decoration: const InputDecoration(
                                             labelText: "Age",
                                             border: OutlineInputBorder(
@@ -195,6 +236,9 @@ class _StudentListScreenState extends State<StudentListScreen> {
                                         SizedBox(height: 10),
                                         TextFormField(
                                           initialValue: profile.hobby,
+                                          onChanged: (value) {
+                                            editedHobby = value;
+                                          },
                                           decoration: const InputDecoration(
                                             labelText: "Hobby",
                                             border: OutlineInputBorder(
@@ -205,6 +249,9 @@ class _StudentListScreenState extends State<StudentListScreen> {
                                         SizedBox(height: 10),
                                         TextFormField(
                                           initialValue: profile.email,
+                                          onChanged: (value) {
+                                            editedEmail = value;
+                                          },
                                           decoration: const InputDecoration(
                                             labelText: "Email",
                                             border: OutlineInputBorder(
@@ -215,12 +262,29 @@ class _StudentListScreenState extends State<StudentListScreen> {
                                         SizedBox(height: 10),
                                         TextFormField(
                                           initialValue: profile.favoriteSubject,
+                                          onChanged: (value) {
+                                            editedFavoriteSubject = value;
+                                          },
                                           decoration: const InputDecoration(
                                             labelText: "Favorite Subject",
                                             border: OutlineInputBorder(
                                               borderRadius: BorderRadius.zero,
                                             ),
                                           ),
+                                        ),
+                                        SizedBox(height: 10),
+                                        StatefulBuilder(
+                                          builder: (context, setDialogState) {
+                                            return SwitchListTile(
+                                              title: const Text("Active"),
+                                              value: editedActive,
+                                              onChanged: (value) {
+                                                setDialogState(() {
+                                                  editedActive = value;
+                                                });
+                                              },
+                                            );
+                                          },
                                         ),
                                       ],
                                     ),
@@ -231,7 +295,74 @@ class _StudentListScreenState extends State<StudentListScreen> {
                                       child: const Text("Cancel"),
                                     ),
                                     ElevatedButton(
-                                      onPressed: () {},
+                                      onPressed: () async {
+                                        if (editedName.trim().isEmpty ||
+                                            editedStudentId.trim().isEmpty ||
+                                            editedCourse.trim().isEmpty ||
+                                            editedYearLevel.trim().isEmpty ||
+                                            editedEmail.trim().isEmpty ||
+                                            editedAge.trim().isEmpty ||
+                                            int.tryParse(editedAge.trim()) ==
+                                                null) {
+                                          ScaffoldMessenger.of(
+                                            this.context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                "Please enter valid student information",
+                                              ),
+                                            ),
+                                          );
+                                          return;
+                                        }
+
+                                        bool duplicateId = profiles.any(
+                                          (student) =>
+                                              student != profile &&
+                                              student.studentId.trim() ==
+                                                  editedStudentId.trim(),
+                                        );
+
+                                        if (duplicateId) {
+                                          ScaffoldMessenger.of(
+                                            this.context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                "Student ID already exists",
+                                              ),
+                                            ),
+                                          );
+                                          return;
+                                        }
+
+                                        profile.name = editedName.trim();
+                                        profile.studentId = editedStudentId
+                                            .trim();
+                                        profile.course = editedCourse.trim();
+                                        profile.yearLevel = editedYearLevel
+                                            .trim();
+                                        profile.age = int.parse(
+                                          editedAge.trim(),
+                                        );
+                                        profile.hobby = editedHobby.trim();
+                                        profile.email = editedEmail.trim();
+                                        profile.favoriteSubject =
+                                            editedFavoriteSubject.trim();
+                                        profile.active = editedActive;
+
+                                        profiles.sort(
+                                          (a, b) => a.name.compareTo(b.name),
+                                        );
+
+                                        await saveProfiles();
+
+                                        if (!mounted) return;
+
+                                        Navigator.pop(this.context);
+
+                                        setState(() {});
+                                      },
                                       child: const Text("Save"),
                                     ),
                                   ],
@@ -256,10 +387,14 @@ class _StudentListScreenState extends State<StudentListScreen> {
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(horizontal: 6),
                           ),
-                          onPressed: () {
+                          onPressed: () async {
                             setState(() {
                               profiles.remove(profile);
                             });
+
+                            await saveProfiles();
+
+                            if (!mounted) return;
 
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -287,10 +422,12 @@ class _StudentListScreenState extends State<StudentListScreen> {
                 child: Column(
                   children: [
                     IconButton(
-                      onPressed: () {
+                      onPressed: () async {
                         setState(() {
                           profile.isFavorite = !profile.isFavorite;
                         });
+
+                        await saveProfiles();
                       },
                       icon: Icon(
                         profile.isFavorite
@@ -321,8 +458,12 @@ class _StudentListScreenState extends State<StudentListScreen> {
         title: const Text("My First Flutter Application"),
         actions: [
           IconButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/add-student');
+            onPressed: () async {
+              final result = await Navigator.pushNamed(context, '/add-student');
+
+              if (result == true) {
+                setState(() {});
+              }
             },
             icon: const Icon(Icons.add),
           ),
