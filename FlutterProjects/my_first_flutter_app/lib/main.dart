@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'core/db_connection.dart';
 import 'profile.dart';
 import 'student_records.dart';
 import 'screens/student_list_screen.dart';
@@ -8,11 +9,15 @@ import 'screens/add_student_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  debugPrint('TESTING NEON CONNECTION...');
+
+  final message = await DbConnection.testConnection();
+  debugPrint(message);
+
   await loadProfiles();
 
   profiles.sort((a, b) => a.name.compareTo(b.name));
 
-  // ma'am ako gi sort lang by surname instead sa first name since sa akong profile ga una ang mga surnames. thank you
   runApp(const MyApp());
 }
 
