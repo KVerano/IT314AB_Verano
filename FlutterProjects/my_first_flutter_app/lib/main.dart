@@ -3,6 +3,8 @@ import 'models/student.dart';
 import 'screens/student_list_screen.dart';
 import 'screens/student_details_screen.dart';
 import 'screens/add_student_screen.dart';
+import 'screens/subject_list_screen.dart';
+import 'screens/add_subject_screen.dart';
 
 void main() {
   // ma'am ako gi sort lang by surname instead sa first name since sa akong profile ga una ang mga surnames. thank you
@@ -27,6 +29,13 @@ class MyApp extends StatelessWidget {
         },
         '/add-student': (context) {
           return const AddStudentScreen();
+        },
+
+        '/subject-list': (context) {
+          return const SubjectListScreen();
+        },
+        '/add-subject': (context) {
+          return const AddSubjectScreen();
         },
       },
     );

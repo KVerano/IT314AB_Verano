@@ -15,8 +15,10 @@ class StudentViewModel extends ChangeNotifier {
     return DbConnection.testConnection();
   }
 
-  Future<void> loadStudents() async {
-    isLoading = true;
+  Future<void> loadStudents({bool showLoading = true}) async {
+    if (showLoading) {
+      isLoading = true;
+    }
     errorMessage = null;
     notifyListeners();
 
@@ -33,7 +35,7 @@ class StudentViewModel extends ChangeNotifier {
   Future<bool> addStudent(Student student) async {
     try {
       await _repository.addStudent(student);
-      await loadStudents();
+      await loadStudents(showLoading: false);
       return true;
     } catch (e) {
       errorMessage = _friendlyError(e);
@@ -45,7 +47,7 @@ class StudentViewModel extends ChangeNotifier {
   Future<bool> updateStudent(Student student) async {
     try {
       await _repository.updateStudent(student);
-      await loadStudents();
+      await loadStudents(showLoading: false);
       return true;
     } catch (e) {
       errorMessage = _friendlyError(e);
@@ -57,7 +59,7 @@ class StudentViewModel extends ChangeNotifier {
   Future<bool> deleteStudent(Student student) async {
     try {
       await _repository.deleteStudent(student.student_id!);
-      await loadStudents();
+      await loadStudents(showLoading: false);
       return true;
     } catch (e) {
       errorMessage = _friendlyError(e);

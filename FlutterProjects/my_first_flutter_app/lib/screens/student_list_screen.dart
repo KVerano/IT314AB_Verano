@@ -19,7 +19,6 @@ class _StudentListScreenState extends State<StudentListScreen> {
     loadData();
   }
 
-  // Checks the Neon connection, loads the students, then shows the result.
   Future<void> loadData() async {
     String message = await studentViewModel.checkConnection();
     await studentViewModel.loadStudents();
@@ -174,6 +173,15 @@ class _StudentListScreenState extends State<StudentListScreen> {
       appBar: AppBar(
         title: const Text("My First Flutter Application"),
         actions: [
+          // subject list button kemeru (comment for organization huehue)
+          IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/subject-list');
+            },
+            icon: const Icon(Icons.menu_book),
+          ),
+
+          // add student button kemeru
           IconButton(
             onPressed: () async {
               final result = await Navigator.pushNamed(context, '/add-student');
