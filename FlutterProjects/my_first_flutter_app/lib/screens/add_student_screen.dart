@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../profile.dart';
-import '../student_records.dart';
+import '../core/year_level_helper.dart';
+import '../models/student.dart';
+import '../viewmodels/student_viewmodel.dart';
 
 class AddStudentScreen extends StatefulWidget {
   const AddStudentScreen({super.key});
@@ -13,18 +14,22 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
   final _formKey = GlobalKey<FormState>();
 
   final studentIdController = TextEditingController();
-  final fullNameController = TextEditingController();
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
   final courseController = TextEditingController();
   final yearLevelController = TextEditingController();
   final emailController = TextEditingController();
+  final contactNumberController = TextEditingController();
 
   @override
   void dispose() {
     studentIdController.dispose();
-    fullNameController.dispose();
+    firstNameController.dispose();
+    lastNameController.dispose();
     courseController.dispose();
     yearLevelController.dispose();
     emailController.dispose();
+    contactNumberController.dispose();
     super.dispose();
   }
 
@@ -48,8 +53,8 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                   if (value == null || value.trim().isEmpty) {
                     return "Please enter Student ID";
                   }
-                  if (profiles.any(
-                    (profile) => profile.studentId.trim() == value.trim(),
+                  if (studentViewModel.students.any(
+                    (student) => student.student_number.trim() == value.trim(),
                   )) {
                     return "Student ID already exists";
                   }
@@ -58,14 +63,28 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
               ),
               SizedBox(height: 15),
               TextFormField(
-                controller: fullNameController,
+                controller: firstNameController,
                 decoration: const InputDecoration(
-                  labelText: "Full Name",
+                  labelText: "First Name",
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return "Please enter Full Name";
+                    return "Please enter First Name";
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 15),
+              TextFormField(
+                controller: lastNameController,
+                decoration: const InputDecoration(
+                  labelText: "Last Name",
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Please enter Last Name";
                   }
                   return null;
                 },
@@ -131,6 +150,21 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                   return null;
                 },
               ),
+              SizedBox(height: 15),
+              TextFormField(
+                controller: contactNumberController,
+                decoration: const InputDecoration(
+                  labelText: "Contact Number",
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.phone,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Please enter Contact Number";
+                  }
+                  return null;
+                },
+              ),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -138,31 +172,43 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
                   ElevatedButton(
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        Profile newStudent = Profile(
-                          image: "",
-                          name: fullNameController.text.trim(),
-                          course: courseController.text.trim(),
-                          yearLevel: yearLevelController.text.trim(),
-                          age: 0,
-                          hobby: "Not provided",
-                          studentId: studentIdController.text.trim(),
+                        Student newStudent = Student(
+                          student_number: studentIdController.text.trim(),
+                          first_name: firstNameController.text.trim(),
+                          last_name: lastNameController.text.trim(),
                           email: emailController.text.trim(),
-                          favoriteSubject: "Not provided",
-                          active: true,
+                          course: courseController.text.trim(),
+                          year_level: yearLevelToNumber(
+                            yearLevelController.text,
+                          ),
+                          contact_number: contactNumberController.text.trim(),
                         );
 
-                        profiles.add(newStudent);
-                        profiles.sort((a, b) => a.name.compareTo(b.name));
+                        bool saved = await studentViewModel.addStudent(
+                          newStudent,
+                        );
 
-                        await saveProfiles();
+                        if (!mounted) return;
+
+                        if (!saved) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                studentViewModel.errorMessage ??
+                                    "Could not save student",
+                              ),
+                            ),
+                          );
+                          return;
+                        }
 
                         studentIdController.clear();
-                        fullNameController.clear();
+                        firstNameController.clear();
+                        lastNameController.clear();
                         courseController.clear();
                         yearLevelController.clear();
                         emailController.clear();
-
-                        if (!mounted) return;
+                        contactNumberController.clear();
 
                         Navigator.pop(context, true);
                       }

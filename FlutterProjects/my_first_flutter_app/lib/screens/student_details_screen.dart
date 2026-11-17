@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import '../profile.dart';
-import '../student_records.dart';
+import '../core/year_level_helper.dart';
+import '../models/student.dart';
+import '../viewmodels/student_viewmodel.dart';
+import 'edit_student_dialog.dart';
+import 'delete_student_dialog.dart';
 
 class StudentDetailsScreen extends StatefulWidget {
-  final Profile profile;
+  final Student profile;
 
   const StudentDetailsScreen({super.key, required this.profile});
 
@@ -12,10 +15,10 @@ class StudentDetailsScreen extends StatefulWidget {
 }
 
 class _StudentDetailsScreenState extends State<StudentDetailsScreen> {
+  late Student profile = widget.profile;
+
   @override
   Widget build(BuildContext context) {
-    final profile = widget.profile;
-
     return Scaffold(
       appBar: AppBar(title: const Text("Student Details")),
 
@@ -26,20 +29,21 @@ class _StudentDetailsScreenState extends State<StudentDetailsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
 
           children: [
-            Center(
-              child: profile.image.isEmpty
-                  ? const Icon(Icons.person, size: 150, color: Colors.grey)
-                  : Image.asset(profile.image, width: 150),
+            const Center(
+              child: Icon(Icons.person, size: 150, color: Colors.grey),
             ),
 
             SizedBox(height: 50),
 
-            Text("Name: ${profile.name}", style: TextStyle(fontSize: 18)),
+            Text(
+              "Name: ${profile.last_name}, ${profile.first_name}",
+              style: TextStyle(fontSize: 18),
+            ),
 
             SizedBox(height: 10),
 
             Text(
-              "Student ID: ${profile.studentId}",
+              "Student ID: ${profile.student_number}",
               style: TextStyle(fontSize: 18),
             ),
 
@@ -50,17 +54,9 @@ class _StudentDetailsScreenState extends State<StudentDetailsScreen> {
             SizedBox(height: 10),
 
             Text(
-              "Year Level: ${profile.yearLevel}",
+              "Year Level: ${yearLevelToText(profile.year_level)}",
               style: TextStyle(fontSize: 18),
             ),
-
-            SizedBox(height: 10),
-
-            Text("Age: ${profile.age}", style: TextStyle(fontSize: 18)),
-
-            SizedBox(height: 10),
-
-            Text("Hobby: ${profile.hobby}", style: TextStyle(fontSize: 18)),
 
             SizedBox(height: 10),
 
@@ -69,246 +65,72 @@ class _StudentDetailsScreenState extends State<StudentDetailsScreen> {
             SizedBox(height: 10),
 
             Text(
-              "Favorite Subject: ${profile.favoriteSubject}",
-              style: TextStyle(fontSize: 18),
-            ),
-
-            SizedBox(height: 10),
-
-            Text(
-              profile.isScholar ? "Scholar: Yes" : "Scholar: No",
-              style: TextStyle(fontSize: 18),
-            ),
-
-            SizedBox(height: 10),
-
-            Text(
-              profile.isFavorite ? "Favorite: Yes" : "Favorite: No",
-              style: TextStyle(fontSize: 18),
-            ),
-
-            SizedBox(height: 10),
-
-            Text(
-              profile.active ? "Status: Active" : "Status: Inactive",
+              "Contact Number: ${profile.contact_number}",
               style: TextStyle(fontSize: 18),
             ),
 
             SizedBox(height: 50),
 
             Center(
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  String editedName = profile.name;
-                  String editedStudentId = profile.studentId;
-                  String editedCourse = profile.course;
-                  String editedYearLevel = profile.yearLevel;
-                  String editedAge = profile.age.toString();
-                  String editedHobby = profile.hobby;
-                  String editedEmail = profile.email;
-                  String editedFavoriteSubject = profile.favoriteSubject;
-                  bool editedActive = profile.active;
-
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: Text("Edit ${profile.name}"),
-                        content: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              TextFormField(
-                                initialValue: profile.name,
-                                onChanged: (value) {
-                                  editedName = value;
-                                },
-                                decoration: const InputDecoration(
-                                  labelText: "Name",
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.zero,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              TextFormField(
-                                initialValue: profile.studentId,
-                                onChanged: (value) {
-                                  editedStudentId = value;
-                                },
-                                decoration: const InputDecoration(
-                                  labelText: "Student ID",
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.zero,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              TextFormField(
-                                initialValue: profile.course,
-                                onChanged: (value) {
-                                  editedCourse = value;
-                                },
-                                decoration: const InputDecoration(
-                                  labelText: "Course",
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.zero,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              TextFormField(
-                                initialValue: profile.yearLevel,
-                                onChanged: (value) {
-                                  editedYearLevel = value;
-                                },
-                                decoration: const InputDecoration(
-                                  labelText: "Year Level",
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.zero,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              TextFormField(
-                                initialValue: profile.age.toString(),
-                                onChanged: (value) {
-                                  editedAge = value;
-                                },
-                                decoration: const InputDecoration(
-                                  labelText: "Age",
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.zero,
-                                  ),
-                                ),
-                                keyboardType: TextInputType.number,
-                              ),
-                              SizedBox(height: 10),
-                              TextFormField(
-                                initialValue: profile.hobby,
-                                onChanged: (value) {
-                                  editedHobby = value;
-                                },
-                                decoration: const InputDecoration(
-                                  labelText: "Hobby",
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.zero,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              TextFormField(
-                                initialValue: profile.email,
-                                onChanged: (value) {
-                                  editedEmail = value;
-                                },
-                                decoration: const InputDecoration(
-                                  labelText: "Email",
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.zero,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              TextFormField(
-                                initialValue: profile.favoriteSubject,
-                                onChanged: (value) {
-                                  editedFavoriteSubject = value;
-                                },
-                                decoration: const InputDecoration(
-                                  labelText: "Favorite Subject",
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.zero,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              StatefulBuilder(
-                                builder: (context, setDialogState) {
-                                  return SwitchListTile(
-                                    title: const Text("Active"),
-                                    value: editedActive,
-                                    onChanged: (value) {
-                                      setDialogState(() {
-                                        editedActive = value;
-                                      });
-                                    },
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: const Text("Cancel"),
-                          ),
-                          ElevatedButton(
-                            onPressed: () async {
-                              if (editedName.trim().isEmpty ||
-                                  editedStudentId.trim().isEmpty ||
-                                  editedCourse.trim().isEmpty ||
-                                  editedYearLevel.trim().isEmpty ||
-                                  editedEmail.trim().isEmpty ||
-                                  editedAge.trim().isEmpty ||
-                                  int.tryParse(editedAge.trim()) == null) {
-                                ScaffoldMessenger.of(this.context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      "Please enter valid student information",
-                                    ),
-                                  ),
-                                );
-                                return;
-                              }
-
-                              bool duplicateId = profiles.any(
-                                (student) =>
-                                    student != profile &&
-                                    student.studentId.trim() ==
-                                        editedStudentId.trim(),
-                              );
-
-                              if (duplicateId) {
-                                ScaffoldMessenger.of(this.context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Student ID already exists"),
-                                  ),
-                                );
-                                return;
-                              }
-
-                              profile.name = editedName.trim();
-                              profile.studentId = editedStudentId.trim();
-                              profile.course = editedCourse.trim();
-                              profile.yearLevel = editedYearLevel.trim();
-                              profile.age = int.parse(editedAge.trim());
-                              profile.hobby = editedHobby.trim();
-                              profile.email = editedEmail.trim();
-                              profile.favoriteSubject = editedFavoriteSubject
-                                  .trim();
-                              profile.active = editedActive;
-
-                              profiles.sort((a, b) => a.name.compareTo(b.name));
-
-                              await saveProfiles();
-
-                              if (!mounted) return;
-
-                              Navigator.pop(this.context);
-
-                              setState(() {});
-                            },
-                            child: const Text("Save"),
-                          ),
-                        ],
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      Student? updated = await showEditStudentDialog(
+                        context,
+                        profile,
                       );
+
+                      if (!mounted) return;
+
+                      if (updated != null) {
+                        setState(() {
+                          profile = updated;
+                        });
+                      }
                     },
-                  );
-                },
-                icon: const Icon(Icons.edit),
-                label: const Text("Edit"),
+                    icon: const Icon(Icons.edit),
+                    label: const Text("Edit"),
+                  ),
+
+                  SizedBox(width: 10),
+
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      bool confirmed = await showDeleteStudentDialog(
+                        context,
+                        profile,
+                      );
+
+                      if (!confirmed) return;
+
+                      bool deleted = await studentViewModel.deleteStudent(
+                        profile,
+                      );
+
+                      if (!mounted) return;
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            deleted
+                                ? "${profile.first_name} ${profile.last_name} removed"
+                                : studentViewModel.errorMessage ??
+                                      "Could not delete student",
+                          ),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+
+                      if (deleted) {
+                        Navigator.pop(context);
+                      }
+                    },
+                    icon: const Icon(Icons.delete),
+                    label: const Text("Delete"),
+                  ),
+                ],
               ),
             ),
           ],
