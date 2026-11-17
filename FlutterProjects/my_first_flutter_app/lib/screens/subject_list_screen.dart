@@ -31,100 +31,108 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
   }
 
   Widget subjectCard(BuildContext context, Subject subject) {
-    return Card(
-      color: Colors.white.withValues(alpha: 0.3),
-      elevation: 0,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Text(
-              subject.subject_code,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            Text(
-              subject.subject_name,
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 10),
-            Text(
-              "Units: ${subject.units}",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18),
-            ),
-            if (subject.description != null &&
-                subject.description!.isNotEmpty) ...[
+    return InkWell(
+      onTap: () {
+        Navigator.pushNamed(context, '/subject-details', arguments: subject);
+      },
+      child: Card(
+        color: Colors.white.withValues(alpha: 0.3),
+        elevation: 0,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              Text(
+                subject.subject_code,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
               SizedBox(height: 10),
               Text(
-                subject.description!,
+                subject.subject_name,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: 18),
               ),
-            ],
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // edit button
-                SizedBox(
-                  width: 105,
-                  child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                    ),
-                    onPressed: () {
-                      showEditSubjectDialog(context, subject);
-                    },
-                    icon: const Icon(Icons.edit, size: 16),
-                    label: const Text("Edit", style: TextStyle(fontSize: 12)),
-                  ),
-                ),
-
-                SizedBox(width: 5),
-
-                // delete button
-                SizedBox(
-                  width: 105,
-                  child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                    ),
-                    onPressed: () async {
-                      bool confirmed = await showDeleteSubjectDialog(
-                        context,
-                        subject,
-                      );
-
-                      if (!confirmed) return;
-
-                      bool deleted = await subjectViewModel.deleteSubject(
-                        subject,
-                      );
-
-                      if (!mounted) return;
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            deleted
-                                ? "${subject.subject_code} removed"
-                                : subjectViewModel.errorMessage ??
-                                      "Could not delete subject",
-                          ),
-                          duration: Duration(seconds: 2),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.delete, size: 16),
-                    label: const Text("Delete", style: TextStyle(fontSize: 12)),
-                  ),
+              SizedBox(height: 10),
+              Text(
+                "Units: ${subject.units}",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 18),
+              ),
+              if (subject.description != null &&
+                  subject.description!.isNotEmpty) ...[
+                SizedBox(height: 10),
+                Text(
+                  subject.description!,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16),
                 ),
               ],
-            ),
-          ],
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // edit button
+                  SizedBox(
+                    width: 105,
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                      ),
+                      onPressed: () {
+                        showEditSubjectDialog(context, subject);
+                      },
+                      icon: const Icon(Icons.edit, size: 16),
+                      label: const Text("Edit", style: TextStyle(fontSize: 12)),
+                    ),
+                  ),
+
+                  SizedBox(width: 5),
+
+                  // delete button
+                  SizedBox(
+                    width: 105,
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                      ),
+                      onPressed: () async {
+                        bool confirmed = await showDeleteSubjectDialog(
+                          context,
+                          subject,
+                        );
+
+                        if (!confirmed) return;
+
+                        bool deleted = await subjectViewModel.deleteSubject(
+                          subject,
+                        );
+
+                        if (!mounted) return;
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              deleted
+                                  ? "${subject.subject_code} removed"
+                                  : subjectViewModel.errorMessage ??
+                                        "Could not delete subject",
+                            ),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.delete, size: 16),
+                      label: const Text(
+                        "Delete",
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

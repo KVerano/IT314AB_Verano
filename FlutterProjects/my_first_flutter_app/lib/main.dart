@@ -5,6 +5,8 @@ import 'screens/student_details_screen.dart';
 import 'screens/add_student_screen.dart';
 import 'screens/subject_list_screen.dart';
 import 'screens/add_subject_screen.dart';
+import 'models/subject.dart';
+import 'screens/subject_details_screen.dart';
 
 void main() {
   // ma'am ako gi sort lang by surname instead sa first name since sa akong profile ga una ang mga surnames. thank you
@@ -36,6 +38,10 @@ class MyApp extends StatelessWidget {
         },
         '/add-subject': (context) {
           return const AddSubjectScreen();
+        },
+        '/subject-details': (context) {
+          final subject = ModalRoute.of(context)!.settings.arguments as Subject;
+          return SubjectDetailsScreen(subject: subject);
         },
       },
     );
