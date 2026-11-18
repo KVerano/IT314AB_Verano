@@ -2,9 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:postgres/postgres.dart';
 import '../models/schedule.dart';
 import '../repositories/schedule_repository.dart';
+import '../repositories/enrollment_repository.dart';
 
 class ScheduleViewModel extends ChangeNotifier {
   final ScheduleRepository _repository = ScheduleRepository();
+  final EnrollmentRepository _enrollmentRepository = EnrollmentRepository();
 
   List<Schedule> schedules = [];
   bool isLoading = false;
@@ -41,6 +43,17 @@ class ScheduleViewModel extends ChangeNotifier {
 
   Future<bool> updateSchedule(Schedule schedule) async {
     try {
+      int enrolled = await _enrollmentRepository.countEnrolledInSubject(
+        schedule.subject_id,
+      );
+
+      if (schedule.slot_capacity < enrolled) {
+        errorMessage =
+            'Slot capacity cannot be lower than the $enrolled students already enrolled';
+        notifyListeners();
+        return false;
+      }
+
       await _repository.updateSchedule(schedule);
       await loadSchedules(schedule.subject_id, showLoading: false);
       return true;
