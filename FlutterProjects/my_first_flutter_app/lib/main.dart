@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'models/student.dart';
-import 'screens/student_list_screen.dart';
-import 'screens/student_details_screen.dart';
-import 'screens/add_student_screen.dart';
-import 'screens/subject_list_screen.dart';
-import 'screens/add_subject_screen.dart';
+import 'views/student_list_screen.dart';
+import 'views/student_details_screen.dart';
+import 'views/add_student_screen.dart';
+import 'views/subject_list_screen.dart';
+import 'views/add_subject_screen.dart';
 import 'models/subject.dart';
-import 'screens/subject_details_screen.dart';
+import 'views/subject_details_screen.dart';
 
 void main() {
   // ma'am ako gi sort lang by surname instead sa first name since sa akong profile ga una ang mga surnames. thank you
