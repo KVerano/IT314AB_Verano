@@ -3,6 +3,7 @@ import '../models/subject.dart';
 import '../viewmodels/subject_viewmodel.dart';
 import 'edit_subject_dialog.dart';
 import 'delete_subject_dialog.dart';
+import 'side_menu.dart';
 
 class SubjectListScreen extends StatefulWidget {
   const SubjectListScreen({super.key});
@@ -12,6 +13,8 @@ class SubjectListScreen extends StatefulWidget {
 }
 
 class _SubjectListScreenState extends State<SubjectListScreen> {
+  String searchText = '';
+
   @override
   void initState() {
     super.initState();
@@ -19,7 +22,9 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
   }
 
   Future<void> loadData() async {
-    await subjectViewModel.loadSubjects();
+    await subjectViewModel.loadSubjects(
+      showLoading: subjectViewModel.subjects.isEmpty,
+    );
 
     if (!mounted) return;
 
@@ -30,14 +35,23 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
     }
   }
 
+  List<Subject> get filteredSubjects {
+    String text = searchText.trim().toLowerCase();
+
+    return subjectViewModel.subjects.where((subject) {
+      return subject.subject_code.toLowerCase().contains(text) ||
+          subject.subject_name.toLowerCase().contains(text);
+    }).toList();
+  }
+
   Widget subjectCard(BuildContext context, Subject subject) {
     return InkWell(
       onTap: () {
         Navigator.pushNamed(context, '/subject-details', arguments: subject);
       },
       child: Card(
-        color: Colors.white.withValues(alpha: 0.3),
         elevation: 0,
+        margin: EdgeInsets.zero,
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -141,41 +155,91 @@ class _SubjectListScreenState extends State<SubjectListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 231, 227, 227),
       appBar: AppBar(
-        title: const Text("Subjects"),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              await Navigator.pushNamed(context, '/add-subject');
-            },
-            icon: const Icon(Icons.add),
+        title: const Text("DBTC Enrollment Management System"),
+        automaticallyImplyLeading: false,
+      ),
+      body: Row(
+        children: [
+          const SideMenu(selected: 'subjects'),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Subjects",
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(160, 40),
+                        ),
+                        onPressed: () async {
+                          await Navigator.pushNamed(context, '/add-subject');
+                        },
+                        child: const Text("Add Subject"),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+                  child: TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        searchText = value;
+                      });
+                    },
+                    decoration: const InputDecoration(
+                      hintText: "Search by Subject Code or Name",
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListenableBuilder(
+                    listenable: subjectViewModel,
+                    builder: (context, child) {
+                      List<Subject> subjects = filteredSubjects;
+
+                      return subjectViewModel.isLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : subjects.isEmpty
+                          ? const Center(
+                              child: Text(
+                                "No subjects found.",
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            )
+                          : ListView.builder(
+                              padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+                              itemCount: subjects.length,
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  children: [
+                                    if (index == 0) SizedBox(height: 15),
+                                    subjectCard(context, subjects[index]),
+                                    SizedBox(height: 10),
+                                  ],
+                                );
+                              },
+                            );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
-      ),
-      body: ListenableBuilder(
-        listenable: subjectViewModel,
-        builder: (context, child) {
-          return subjectViewModel.isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : subjectViewModel.subjects.isEmpty
-              ? const Center(
-                  child: Text(
-                    "No subjects found.",
-                    style: TextStyle(fontSize: 18),
-                  ),
-                )
-              : ListView.builder(
-                  padding: const EdgeInsets.all(8),
-                  itemCount: subjectViewModel.subjects.length,
-                  itemBuilder: (context, index) {
-                    return subjectCard(
-                      context,
-                      subjectViewModel.subjects[index],
-                    );
-                  },
-                );
-        },
       ),
     );
   }

@@ -4,6 +4,7 @@ import '../models/student.dart';
 import '../viewmodels/student_viewmodel.dart';
 import 'edit_student_dialog.dart';
 import 'delete_student_dialog.dart';
+import 'side_menu.dart';
 
 class StudentListScreen extends StatefulWidget {
   const StudentListScreen({super.key});
@@ -13,6 +14,8 @@ class StudentListScreen extends StatefulWidget {
 }
 
 class _StudentListScreenState extends State<StudentListScreen> {
+  String searchText = '';
+
   @override
   void initState() {
     super.initState();
@@ -33,6 +36,33 @@ class _StudentListScreenState extends State<StudentListScreen> {
     );
   }
 
+  List<Student> get filteredStudents {
+    String text = searchText.trim().toLowerCase();
+
+    List<Student> filtered = studentViewModel.students.where((student) {
+      return student.first_name.toLowerCase().contains(text) ||
+          student.last_name.toLowerCase().contains(text) ||
+          "${student.first_name} ${student.last_name}".toLowerCase().contains(
+            text,
+          ) ||
+          student.student_number.toLowerCase().contains(text);
+    }).toList();
+
+    filtered.sort((a, b) {
+      int surnameOrder = a.last_name.toLowerCase().compareTo(
+        b.last_name.toLowerCase(),
+      );
+
+      if (surnameOrder != 0) {
+        return surnameOrder;
+      }
+
+      return a.first_name.toLowerCase().compareTo(b.first_name.toLowerCase());
+    });
+
+    return filtered;
+  }
+
   Widget profileCard(BuildContext context, Student profile) {
     return InkWell(
       onTap: () async {
@@ -49,8 +79,8 @@ class _StudentListScreenState extends State<StudentListScreen> {
         setState(() {});
       },
       child: Card(
-        color: Colors.white.withOpacity(0.3),
         elevation: 0,
+        margin: EdgeInsets.zero,
         child: Padding(
           padding: const EdgeInsets.all(8),
           child: Column(
@@ -169,54 +199,95 @@ class _StudentListScreenState extends State<StudentListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 231, 227, 227),
-      appBar: AppBar(
-        title: const Text("My First Flutter Application"),
-        actions: [
-          // subject list button kemeru (comment for organization huehue)
-          IconButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/subject-list');
-            },
-            icon: const Icon(Icons.menu_book),
-          ),
+      appBar: AppBar(title: const Text("DBTC Enrollment Management System")),
+      body: Row(
+        children: [
+          const SideMenu(selected: 'students'),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Students",
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(160, 40),
+                        ),
+                        onPressed: () async {
+                          final result = await Navigator.pushNamed(
+                            context,
+                            '/add-student',
+                          );
 
-          // add student button kemeru
-          IconButton(
-            onPressed: () async {
-              final result = await Navigator.pushNamed(context, '/add-student');
+                          if (result == true) {
+                            setState(() {});
+                          }
+                        },
+                        child: const Text("Add Student"),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+                  child: TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        searchText = value;
+                      });
+                    },
+                    decoration: const InputDecoration(
+                      hintText: "Search by Name or Student ID",
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: ListenableBuilder(
+                    listenable: studentViewModel,
+                    builder: (context, child) {
+                      List<Student> students = filteredStudents;
 
-              if (result == true) {
-                setState(() {});
-              }
-            },
-            icon: const Icon(Icons.add),
+                      return studentViewModel.isLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : students.isEmpty
+                          ? const Center(
+                              child: Text(
+                                "No students found.",
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            )
+                          : ListView.builder(
+                              padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+                              itemCount: students.length,
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  children: [
+                                    if (index == 0) SizedBox(height: 15),
+                                    profileCard(context, students[index]),
+                                    SizedBox(height: 10),
+                                  ],
+                                );
+                              },
+                            );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
-      ),
-      body: ListenableBuilder(
-        listenable: studentViewModel,
-        builder: (context, child) {
-          return studentViewModel.isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : studentViewModel.students.isEmpty
-              ? const Center(
-                  child: Text(
-                    "No students found.",
-                    style: TextStyle(fontSize: 18),
-                  ),
-                )
-              : ListView.builder(
-                  padding: const EdgeInsets.all(8),
-                  itemCount: studentViewModel.students.length,
-                  itemBuilder: (context, index) {
-                    return profileCard(
-                      context,
-                      studentViewModel.students[index],
-                    );
-                  },
-                );
-        },
       ),
     );
   }

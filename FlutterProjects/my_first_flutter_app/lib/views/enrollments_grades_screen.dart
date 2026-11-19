@@ -5,10 +5,8 @@ import '../models/grade_detail.dart';
 import '../models/student.dart';
 import '../viewmodels/enrollment_viewmodel.dart';
 import '../viewmodels/grade_viewmodel.dart';
-import 'enroll_student_screen.dart';
 import 'change_schedule_dialog.dart';
 import 'drop_enrollment_dialog.dart';
-import 'add_grade_screen.dart';
 import 'edit_grade_dialog.dart';
 import 'delete_grade_dialog.dart';
 
@@ -22,51 +20,12 @@ class EnrollmentsGradesScreen extends StatefulWidget {
       _EnrollmentsGradesScreenState();
 }
 
-class _EnrollmentsGradesScreenState extends State<EnrollmentsGradesScreen>
-    with SingleTickerProviderStateMixin {
-  late final TabController tabController;
-
+class _EnrollmentsGradesScreenState extends State<EnrollmentsGradesScreen> {
   @override
   void initState() {
     super.initState();
-    tabController = TabController(length: 2, vsync: this);
     loadEnrollments();
     loadGrades();
-  }
-
-  @override
-  void dispose() {
-    tabController.dispose();
-    super.dispose();
-  }
-
-  Future<void> openForm() async {
-    if (tabController.index == 0) {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return EnrollStudentScreen(student: widget.student);
-          },
-        ),
-      );
-
-      if (!mounted) return;
-
-      await enrollmentViewModel.loadEnrollments(
-        widget.student.student_id!,
-        showLoading: false,
-      );
-    } else {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) {
-            return AddGradeScreen(student: widget.student);
-          },
-        ),
-      );
-    }
   }
 
   Future<void> loadEnrollments() async {
@@ -95,7 +54,6 @@ class _EnrollmentsGradesScreenState extends State<EnrollmentsGradesScreen>
 
   Widget enrollmentCard(EnrollmentDetail enrollment) {
     return Card(
-      color: Colors.grey.shade200,
       elevation: 0,
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -221,7 +179,6 @@ class _EnrollmentsGradesScreenState extends State<EnrollmentsGradesScreen>
 
   Widget gradeCard(GradeDetail grade) {
     return Card(
-      color: Colors.grey.shade200,
       elevation: 0,
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -382,30 +339,24 @@ class _EnrollmentsGradesScreenState extends State<EnrollmentsGradesScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "${widget.student.last_name}, ${widget.student.first_name}",
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              openForm();
-            },
-            icon: const Icon(Icons.add),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            "${widget.student.last_name}, ${widget.student.first_name}",
           ),
-        ],
-        bottom: TabBar(
-          controller: tabController,
-          tabs: const [
-            Tab(text: "Enrollments"),
-            Tab(text: "Grades"),
-          ],
+          bottom: const TabBar(
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.white70,
+            indicatorColor: Colors.white,
+            tabs: [
+              Tab(text: "Enrollments"),
+              Tab(text: "Grades"),
+            ],
+          ),
         ),
-      ),
-      body: TabBarView(
-        controller: tabController,
-        children: [enrollmentsTab(), gradesTab()],
+        body: TabBarView(children: [enrollmentsTab(), gradesTab()]),
       ),
     );
   }

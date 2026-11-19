@@ -50,7 +50,6 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
 
   Widget scheduleCard(Schedule schedule) {
     return Card(
-      color: Colors.white.withValues(alpha: 0.3),
       elevation: 0,
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -150,18 +149,7 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
     final subject = widget.subject;
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 231, 227, 227),
-      appBar: AppBar(
-        title: const Text("Subject Details"),
-        actions: [
-          IconButton(
-            onPressed: () {
-              openForm(null);
-            },
-            icon: const Icon(Icons.add),
-          ),
-        ],
-      ),
+      appBar: AppBar(title: const Text("Subject Details")),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -201,7 +189,7 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
                       : scheduleViewModel.schedules.isEmpty
                       ? const Center(
                           child: Text(
-                            "No schedules yet. Tap + to add one.",
+                            "No schedules yet.",
                             style: TextStyle(fontSize: 16),
                           ),
                         )

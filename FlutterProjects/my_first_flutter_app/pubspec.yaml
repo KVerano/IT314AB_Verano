@@ -67,6 +67,7 @@ flutter:
   - assets/leila.jpeg
   - assets/cassy.jpeg
   - assets/taylor.webp
+  - assets/db_logo.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

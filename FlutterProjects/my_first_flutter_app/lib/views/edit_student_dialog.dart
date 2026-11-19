@@ -123,6 +123,21 @@ Future<Student?> showEditStudentDialog(BuildContext context, Student student) {
                 return;
               }
 
+              String email = editedEmail.trim();
+
+              if (email.startsWith("@") ||
+                  email.endsWith(".") ||
+                  email.contains(" ") ||
+                  !email.contains("@") ||
+                  !email.contains(".")) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("Please enter a valid email address"),
+                  ),
+                );
+                return;
+              }
+
               int yearLevel = yearLevelToNumber(editedYearLevel);
 
               if (yearLevel == 0) {
